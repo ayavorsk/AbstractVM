@@ -55,16 +55,17 @@ template<class T> void mul_check(T a, T b)
 
 template<class T> IOperand const * Operand<T>::operator*( IOperand const & rhs ) const
 {
+
 	if(getPrecision() < rhs.getPrecision())
 		return (rhs * *this);
-	add_check(value_ , static_cast<T>(std::stod(rhs.toString())));
+	mul_check(value_ , static_cast<T>(std::stod(rhs.toString())));
 	auto const & res = AbstractVM().createOperand(getType(), std::to_string(value_ * (static_cast<T>(std::stod(rhs.toString())))));
 	return res;
 }
 
 template<class T> IOperand const * Operand<T>::operator/( IOperand const & rhs ) const
 {
-	if ((std::stod(rhs.toString())) == 0)
+	if ( (std::stold(rhs.toString()) > -0.0000001 && std::stold(rhs.toString()) < 0.0000001))
 		throw std::invalid_argument("Error : div by 0");
 	auto const & res = AbstractVM().createOperand((getPrecision() < rhs.getPrecision()) ? rhs.getType() : getType(),
 		std::to_string(value_ / (static_cast<T>(std::stod(rhs.toString())))));
@@ -73,10 +74,10 @@ template<class T> IOperand const * Operand<T>::operator/( IOperand const & rhs )
 
 template<class T> IOperand const * Operand<T>::operator%( IOperand const & rhs ) const
 {
-	if ((std::stod(rhs.toString())) == 0)
-		throw std::invalid_argument("Error : mod by 0");
+	if ((std::stold(rhs.toString()) > -0.0000001 && std::stold(rhs.toString()) < 0.0000001))
+		throw std::invalid_argument("Error : Mod by 0");
 	if (rhs.getType() > 2 || getType() > 2)
-		throw std::invalid_argument("Error : mod wrong type");
+		throw std::invalid_argument("Error : Mod wrong type");
 	auto const & res = AbstractVM().createOperand((getPrecision() < rhs.getPrecision()) ? rhs.getType() : getType(),
 		std::to_string(static_cast<long>(value_) % (static_cast<long>(std::stod(rhs.toString())))));
 	return res;
@@ -115,7 +116,7 @@ template<class T> IOperand const & Operand<T>::operator=(Operand const & copy)
 	value_ = copy.value_; 
 	stringvalue_ = copy.stringvalue_;
 	type_ = copy.type_;
-	return (*this);
+	return *this;
 }
 
 template<class T> Operand<T>::~Operand(){

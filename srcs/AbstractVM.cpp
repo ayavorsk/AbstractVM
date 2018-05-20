@@ -19,9 +19,9 @@ template <typename T>
 void				Overflow_Underflow_check(long double nbr)
 {
 	if (nbr > std::numeric_limits<T>::max())
-		throw std::overflow_error("Error : Int overflow error ");
+		throw std::overflow_error("Error : Value overflow error ");
 	if (nbr < std::numeric_limits<T>::min())
-		throw std::underflow_error("Error : Int underflow error ");
+		throw std::underflow_error("Error : Value underflow error ");
 }
 
 IOperand const * AbstractVM::createInt8(std::string const & value ) const
@@ -53,7 +53,9 @@ IOperand const * AbstractVM::createFloat(std::string const & value ) const
 
 IOperand const * AbstractVM::createDouble(std::string const & value ) const
 {
-	double nbr = std::stod(value);
+	long double nbr = std::stold(value);
+	Overflow_Underflow_check<double>(nbr);
+	std::cout << nbr << std::endl;
 	return new Operand<double>(nbr, Double);
 }
 
