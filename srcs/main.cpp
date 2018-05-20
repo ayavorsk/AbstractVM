@@ -17,6 +17,7 @@
 int	 main(int argc, char *argv[])
 {
 	OperandExecuter vm;
+
 	try{
 		vm.SetInput_Stream(argc, argv);
 		vm.OperationLexer();
